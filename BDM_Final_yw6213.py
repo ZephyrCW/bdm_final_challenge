@@ -4,8 +4,6 @@ import json
 from pyspark.sql.functions import col
 from pyspark.sql.functions import substring
 import os
-from pyproj import Transformer
-from shapely.geometry import Point
 # def date_is_valid(date_range_start, date_range_end):
 #     return (date_range_start >= '2019-03-01' and date_range_end <= '2019-03-31') \
 #            or (date_range_start >= '2019-10-01' and date_range_end <= '2019-10-31') \
@@ -62,10 +60,7 @@ def parse_vistor_home_cbgs(vistors_home_cbgs,list_nyc_cbg_centroids):
     return (cbgs)
 
 def calulate_distance(cbg_latlong,poi_cbg_latlong):
-    t = Transformer.from_crs(4326, 2263)
-    point_poi = Point(t.transform(poi_cbg_latlong[0],poi_cbg_latlong[1]))
-    point_cbg = Point(t.transform(cbg_latlong[0], cbg_latlong[1]))
-    return point_poi.distance(point_cbg)/5280
+    return haversine2(poi_cbg_latlong[1],poi_cbg_latlong[0],cbg_latlong[1],cbg_latlong[0])
 
 def distances(x,dict_cbg_latlong):
     poi_cbg_latlong = dict_cbg_latlong.get(x[0][0])
